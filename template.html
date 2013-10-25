@@ -3,12 +3,8 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
     <title>Tornado Chat Demo</title>
-    <!-- <link rel="stylesheet" href="{{ static_url("chat.css") }}" type="text/css"/> -->
   </head>
   <body>
-    <div id="nav">
-      <a href="/auth/logout">{{ _("Sign out") }}</a>
-    </div>
     <div id="body">
       <div id="inbox">
         {% for entry in entries %}
