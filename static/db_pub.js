@@ -16,27 +16,29 @@ $(document).ready(function() {
     if (!window.console) window.console = {};
     if (!window.console.log) window.console.log = function() {};
 
-    $("#messageform").live("submit", function() {
-        newMessage($(this));
+    $("#entryform").live("submit", function() {
+        newEntry($(this));
         return false;
     });
-    $("#messageform").live("keypress", function(e) {
+    $("#entryform").live("keypress", function(e) {
+        // Press key Enter
         if (e.keyCode == 13) {
-            newMessage($(this));
+            newEntry($(this));
             return false;
         }
     });
-    $("#key").select();
+    $("#entry").select();
     updater.poll();
 });
 
-function newMessage(form) {
-    var message = form.formToDict();
+// Common functions
+function newEntry(form) {
+    var entry = form.formToDict();
     var submit_btn = form.find("input[type=submit]");
     submit_btn.disable();
-    $.postJSON("/set", message, function(response) {
+    $.postJSON("/set", entry, function(response) {
         form.find("input[type=text]").val("");
-        $("#key").select();
+        $("#entry").select();
         submit_btn.enable();
     });
 }
@@ -73,6 +75,8 @@ jQuery.fn.enable = function(opt_enable) {
     }
     return this;
 };
+// End common functions
+
 
 var updater = {
     errorSleepTime: 500,
@@ -86,7 +90,7 @@ var updater = {
 
     onSuccess: function(response) {
         try {
-            updater.newMessages(eval("(" + response + ")"));
+            updater.newEntry(eval("(" + response + ")"));
         } catch (e) {
             updater.onError();
             return;
@@ -101,11 +105,11 @@ var updater = {
         window.setTimeout(updater.poll, updater.errorSleepTime);
     },
 
-    newMessages: function(response) {
-        updater.showMessage(response);
+    newEntry: function(response) {
+        updater.showEntry(response);
     },
 
-    showMessage: function(entry) {
+    showEntry: function(entry) {
         var existing = $("#" + entry.key);
         if (existing.length > 0) {
             existing.find('span').text(entry.value)
